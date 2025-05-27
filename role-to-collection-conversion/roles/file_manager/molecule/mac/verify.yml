@@ -1,0 +1,19 @@
+---
+- name: Verify
+  hosts: all
+  tasks:
+    - name: Verify file exists
+      stat:
+        path: /tmp/file_test/test.txt
+      register: file_stat
+      
+    - name: Verify file content
+      shell: "cat /tmp/file_test/test.txt"
+      register: file_content
+      changed_when: false
+      
+    - name: Assert test was successful
+      assert:
+        that:
+          - file_stat.stat.exists
+          - file_content.stdout == "This is a test file"

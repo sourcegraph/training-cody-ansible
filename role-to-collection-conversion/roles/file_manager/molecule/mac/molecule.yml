@@ -1,0 +1,26 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: podman
+platforms:
+  - name: mac-instance
+    image: docker.io/pycontribs/alpine:latest
+    pre_build_image: true
+    command: sleep infinity
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      local_tmp: ~/.ansible/tmp
+      remote_tmp: /tmp
+verifier:
+  name: ansible
+scenario:
+  name: mac
+  test_sequence:
+    - destroy
+    - create
+    - converge
+    - verify
+    - destroy

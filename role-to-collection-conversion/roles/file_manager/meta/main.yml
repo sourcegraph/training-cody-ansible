@@ -1,0 +1,31 @@
+---
+galaxy_info:
+  author: example_author
+  description: Role for managing files and directories with various options
+  company: Example Inc
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+  galaxy_tags:
+    - files
+    - system
+    - configuration
+
+dependencies: []
+
+molecule_ephemeral_directory: /tmp/molecule

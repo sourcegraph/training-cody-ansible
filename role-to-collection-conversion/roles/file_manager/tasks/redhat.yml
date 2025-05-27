@@ -1,0 +1,19 @@
+---
+# RedHat family specific tasks
+
+- name: Install required packages for RedHat systems
+  ansible.builtin.package:
+    name: "{{ file_manager_required_packages[ansible_os_family] }}"
+    state: present
+  when: file_manager_required_packages[ansible_os_family] is defined
+
+- name: Configure SELinux contexts for file_manager directories
+  ansible.builtin.seboolean:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    persistent: true
+  loop:
+    - name: ftp_home_dir
+      state: true
+  when: ansible_selinux.status == "enabled"
+  ignore_errors: true

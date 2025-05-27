@@ -1,0 +1,56 @@
+---
+# Main tasks file for file_manager role
+
+- name: Create directory structure
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ file_manager_owner | default('root') }}"
+    group: "{{ file_manager_group | default('root') }}"
+  loop: "{{ file_manager_directories }}"
+  when: file_manager_directories is defined
+
+- name: Create configuration files from templates
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+    owner: "{{ file_manager_owner | default('root') }}"
+    group: "{{ file_manager_group | default('root') }}"
+  loop: "{{ file_manager_template_files }}"
+  when: file_manager_template_files is defined
+
+- name: Create standard files with content
+  ansible.builtin.copy:
+    content: "{{ item.content }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+    owner: "{{ file_manager_owner | default('root') }}"
+    group: "{{ file_manager_group | default('root') }}"
+  loop: "{{ file_manager_content_files }}"
+  when: file_manager_content_files is defined
+
+- name: Copy files from source
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('0644') }}"
+    owner: "{{ file_manager_owner | default('root') }}"
+    group: "{{ file_manager_group | default('root') }}"
+  loop: "{{ file_manager_copy_files }}"
+  when: file_manager_copy_files is defined
+
+- name: Link files
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    owner: "{{ file_manager_owner | default('root') }}"
+    group: "{{ file_manager_group | default('root') }}"
+  loop: "{{ file_manager_link_files }}"
+  when: file_manager_link_files is defined
+
+- name: Include OS-specific tasks
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"
+  when: file_manager_include_os_specific_tasks | default(true)

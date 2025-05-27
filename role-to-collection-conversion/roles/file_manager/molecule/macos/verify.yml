@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  become: false
+  tasks:
+    - name: Verify directory exists
+      ansible.builtin.stat:
+        path: "/tmp/file_manager_test"
+      register: dir_stat
+
+    - name: Verify file exists
+      ansible.builtin.stat:
+        path: "/tmp/file_manager_test/test.conf"
+      register: file_stat
+
+    - name: Assert directory and file were created
+      assert:
+        that:
+          - dir_stat.stat.exists
+          - file_stat.stat.exists

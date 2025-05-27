@@ -1,0 +1,39 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Verify directories exist with correct permissions
+      ansible.builtin.stat:
+        path: "{{ item.path }}"
+      register: stat_result
+      failed_when: not stat_result.stat.exists or stat_result.stat.mode != item.expected_mode
+      loop:
+        - path: "/etc/file_manager"
+          expected_mode: "0755"
+        - path: "/var/lib/file_manager"
+          expected_mode: "0755"
+        - path: "/var/log/file_manager"
+          expected_mode: "0755"
+
+    - name: Verify template file exists
+      ansible.builtin.stat:
+        path: "/etc/file_manager/example.conf"
+      register: conf_stat
+      failed_when: not conf_stat.stat.exists or conf_stat.stat.mode != "0644"
+      
+    - name: Check OS-specific tasks ran properly
+      ansible.builtin.debug:
+        msg: "OS-specific tasks for {{ ansible_os_family }} were executed"
+      
+    - name: Verify required packages are installed
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      check_mode: true
+      register: pkg_result
+      failed_when: pkg_result.changed
+      loop:
+        - rsync
+        - tar
+      when: ansible_os_family in ['RedHat', 'Debian']

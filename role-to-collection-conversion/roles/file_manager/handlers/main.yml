@@ -1,0 +1,19 @@
+---
+# Handlers for file_manager role
+
+- name: Restart file_manager service
+  ansible.builtin.service:
+    name: file_manager
+    state: restarted
+  when: file_manager_manage_service | default(true)
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: ansible_service_mgr == "systemd"
+
+- name: Clear file_manager cache
+  ansible.builtin.file:
+    path: "/var/cache/file_manager"
+    state: absent
+  when: file_manager_clear_cache_on_config_change | default(false)

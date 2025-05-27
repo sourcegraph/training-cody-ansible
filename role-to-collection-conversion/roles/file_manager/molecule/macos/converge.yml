@@ -1,0 +1,24 @@
+---
+- name: Converge
+  hosts: all
+  become: false
+  tasks:
+    - name: Create temporary directories
+      file:
+        path: "/root/.ansible/tmp"
+        state: directory
+        mode: "0700"
+
+    - name: Include file_manager role
+      include_role:
+        name: file_manager
+      vars:
+        file_manager_owner: "root"
+        file_manager_group: "root"
+        file_manager_directories:
+          - path: "/tmp/file_manager_test"
+            mode: "0755"
+        file_manager_content_files:
+          - content: "# Test file\n"
+            dest: "/tmp/file_manager_test/test.conf"
+            mode: "0644"

@@ -1,0 +1,19 @@
+---
+# Debian family specific tasks
+
+- name: Install required packages for Debian systems
+  ansible.builtin.package:
+    name: "{{ file_manager_required_packages[ansible_os_family] }}"
+    state: present
+  when: file_manager_required_packages[ansible_os_family] is defined
+
+- name: Ensure AppArmor allows access to file_manager directories
+  ansible.builtin.lineinfile:
+    path: "/etc/apparmor.d/local/usr.sbin.file_manager"
+    line: "{{ item }}"
+    create: true
+    mode: "0644"
+  loop:
+    - "/var/lib/file_manager/** rwk,"
+    - "/var/log/file_manager/** rwk,"
+  when: ansible_os_family == "Debian" and file_manager_configure_apparmor | default(false)

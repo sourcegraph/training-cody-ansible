@@ -1,0 +1,22 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Include file_manager role
+      include_role:
+        name: file_manager
+      vars:
+        file_manager_owner: "root"
+        file_manager_group: "root"
+        file_manager_directories:
+          - path: "/etc/file_manager"
+            mode: "0755"
+          - path: "/var/lib/file_manager"
+            mode: "0755"
+          - path: "/var/log/file_manager"
+            mode: "0755"
+        file_manager_template_files:
+          - src: "example.conf.j2"
+            dest: "/etc/file_manager/example.conf"
+            mode: "0644"

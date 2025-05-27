@@ -1,0 +1,39 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Create tmp directory for Ansible
+      ansible.builtin.file:
+        path: /tmp/.ansible-{{ lookup('env', 'USER') }}/tmp
+        state: directory
+        mode: '0700'
+      ignore_errors: true
+
+    - name: Install python for Ansible
+      raw: >
+        command -v python3 || { command -v dnf && dnf -y install python3; } || 
+        { command -v apt-get && apt-get update && apt-get -y install python3; }
+      changed_when: false
+      ignore_errors: true
+
+    - name: Gather facts after Python installation
+      setup:
+      ignore_errors: true
+
+    # Install dependencies required for testing
+    - name: Update package cache (Debian/Ubuntu)
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_os_family == "Debian"
+      changed_when: false
+      ignore_errors: true
+
+    - name: Install required packages
+      ansible.builtin.package:
+        name:
+          - rsync
+          - tar
+        state: present
+      ignore_errors: true

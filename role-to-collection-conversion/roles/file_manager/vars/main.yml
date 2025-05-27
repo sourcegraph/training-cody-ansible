@@ -1,0 +1,32 @@
+---
+# Variables for file_manager role
+# These values override defaults but can be overridden by playbook variables
+
+# Internal variables used by the role
+file_manager_supported_platforms:
+  - RedHat
+  - Debian
+  - Ubuntu
+  - CentOS
+  - Fedora
+  - SUSE
+
+file_manager_required_packages:
+  RedHat:
+    - rsync
+    - tar
+  Debian:
+    - rsync
+    - tar
+  Ubuntu:
+    - rsync
+    - tar
+  CentOS:
+    - rsync
+    - tar
+  Fedora:
+    - rsync
+    - tar
+  SUSE:
+    - rsync
+    - tar

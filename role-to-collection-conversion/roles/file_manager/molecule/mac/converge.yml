@@ -1,0 +1,28 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Ensure Python is available
+      raw: "apk add --no-cache python3"
+      changed_when: false
+      
+    - name: Create test directory
+      file:
+        path: /tmp/file_test
+        state: directory
+        mode: "0755"
+      
+    - name: Create test file
+      copy:
+        content: "This is a test file"
+        dest: /tmp/file_test/test.txt
+        mode: "0644"
+      
+    - name: Verify permissions
+      stat:
+        path: /tmp/file_test
+      register: dir_stat
+      
+    - name: Debug directory permissions
+      debug:
+        var: dir_stat

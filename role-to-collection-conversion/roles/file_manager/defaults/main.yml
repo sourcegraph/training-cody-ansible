@@ -1,0 +1,41 @@
+---
+# Default variables for file_manager role
+
+# Directory owner/group
+file_manager_owner: "root"
+file_manager_group: "root"
+
+# Default directories to create
+file_manager_directories:
+  - path: "/etc/file_manager"
+    mode: "0755"
+  - path: "/var/lib/file_manager"
+    mode: "0755"
+  - path: "/var/log/file_manager"
+    mode: "0755"
+  - path: "/var/lib/file_manager/data"
+    mode: "0750"
+  - path: "/var/lib/file_manager/backups"
+    mode: "0750"
+
+# Default template files
+file_manager_template_files:
+  - src: "example.conf.j2"
+    dest: "/etc/file_manager/example.conf"
+    mode: "0644"
+
+# Default content files
+file_manager_content_files:
+  - content: "# File created by Ansible\n# Do not edit manually\n"
+    dest: "/etc/file_manager/README"
+    mode: "0644"
+
+# Default settings
+file_manager_log_level: "info"
+file_manager_max_files: 100
+file_manager_backup_enabled: true
+file_manager_data_dir: "/var/lib/file_manager"
+file_manager_log_dir: "/var/log/file_manager"
+file_manager_allow_symlinks: false
+file_manager_default_permissions: "0644"
+file_manager_include_os_specific_tasks: true
